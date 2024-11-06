@@ -29,4 +29,5 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           directory: packages/aws-cdk/coverage
+          flags: suite.unit,package.aws-cdk
           token: ${{ secrets.CODECOV_TOKEN }}
