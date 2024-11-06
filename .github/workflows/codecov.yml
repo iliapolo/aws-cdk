@@ -28,6 +28,7 @@ jobs:
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
         with:
-          directory: packages/aws-cdk/coverage
+          file: packages/aws-cdk/coverage/coverage.txt
+          disable_search: true
           flags: suite.unit,package.aws-cdk
           token: ${{ secrets.CODECOV_TOKEN }}
