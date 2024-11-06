@@ -28,7 +28,7 @@ module.exports = {
     },
   },
   collectCoverage: true,
-  coverageReporters: ['lcov', 'html', 'text-summary', ['text', { file: 'coverage.txt' }]],
+  coverageReporters: ['json', 'lcov', 'html', 'text-summary', ['text', { file: 'coverage.txt' }]],
   coveragePathIgnorePatterns: ['\\.generated\\.[jt]s$', '<rootDir>/test/', '.warnings.jsii.js$', '/node_modules/'],
   reporters: ['default', ['jest-junit', { suiteName: 'jest tests', outputDirectory: 'coverage' }]],
   /**
