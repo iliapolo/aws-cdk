@@ -30,5 +30,4 @@ jobs:
         with:
           file: packages/aws-cdk/coverage/coverage.txt
           disable_search: true
-          flags: suite.unit,package.aws-cdk
           token: ${{ secrets.CODECOV_TOKEN }}
