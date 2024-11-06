@@ -28,7 +28,7 @@ jobs:
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
         with:
-          file: packages/aws-cdk/coverage/coverage-final.json
+          file: packages/aws-cdk/coverage/cobertura-coverage.xml
           fail_ci_if_error: true
           disable_search: true
           verbose: true
