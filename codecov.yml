@@ -1,8 +1,15 @@
 # https://docs.codecov.com/docs/codecovyml-reference#coverage
 coverage:
   status:
-    project: true
-    patch: true
+    project:
+      default:
+        # require the overall project coverage to never decrease
+        target: auto
+    patch:
+      default:
+        # require the overall patch coverage to be at least 95%
+        target: 95
+        
 
 https://docs.codecov.com/docs/codecovyml-reference#comment
 comment:
@@ -12,9 +19,12 @@ comment:
 component_management:
   default_rules:
     statuses:
-      # every component will produce its own status check that requires coverage increase
+      # every component will produce its own status check that requires overall coverage doesnt decrease
       - type: project
         target: auto
+      # every component will produce its own status check that requires patch coverage of at least 95%
+      - type: patch
+        target: 95
   individual_components:
     - component_id: package_aws_cdk  # identifier that should not be changed
       name: packages/aws-cdk # display name that can change freely
