@@ -1,4 +1,4 @@
-name: codecov
+name: Codecov
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
     branches: [ "main" ]
     
 jobs:
-  test:
-    name: Run tests and collect coverage
+  collect:
+    name: collect
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
