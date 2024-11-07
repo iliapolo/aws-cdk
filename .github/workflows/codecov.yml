@@ -23,7 +23,7 @@ jobs:
         run: cd packages/aws-cdk && yarn install
 
       - name: Build CLI
-        run: cd packages/aws-cdk && npx lerna run build --scope=aws-cdk --skip-nx-cache
+        run: cd packages/aws-cdk && npx lerna run build --scope=aws-cdk
 
       - name: Run tests
         run: cd packages/aws-cdk && yarn test
