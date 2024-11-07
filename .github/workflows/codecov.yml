@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -31,8 +29,7 @@ jobs:
       - name: Upload results to Codecov
         uses: codecov/codecov-action@v4
         with:
-          file: packages/aws-cdk/coverage/cobertura-coverage.xml
-          flags: suite.unit
+          directory: packages/aws-cdk/coverage
           fail_ci_if_error: true
-          disable_search: true
+          flags: suite.unit
           token: ${{ secrets.CODECOV_TOKEN }}
