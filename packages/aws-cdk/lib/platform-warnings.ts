@@ -7,6 +7,7 @@ export async function checkForPlatformWarnings() {
     logging.warning('`cdk synth` may hang in Docker on Linux 5.6-5.10. See https://github.com/aws/aws-cdk/issues/21379 for workarounds.');
     logging.warning('foo');
     logging.warning('bar');
+    logging.warning('zar');
   }
 }
 
