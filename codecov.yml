@@ -11,7 +11,7 @@ coverage:
         target: 95
         
 
-https://docs.codecov.com/docs/codecovyml-reference#comment
+# https://docs.codecov.com/docs/codecovyml-reference#comment
 comment:
   layout: "header, diff, flags, components"
 
