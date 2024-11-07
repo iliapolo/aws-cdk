@@ -2,3 +2,15 @@ coverage:
   status:
     project: true
     patch: true
+
+comment:
+  layout: "header, diff, flags, components"  # show component info in the PR comment
+
+# https://docs.codecov.com/docs/components
+
+component_management:
+  individual_components:
+    - component_id: package_aws_cdk  # this is an identifier that should not be changed
+      name: packages/aws-cdk # display name that can change freely
+      paths:
+        - packages/aws-cdk/**
