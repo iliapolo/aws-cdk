@@ -29,7 +29,7 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           file: packages/aws-cdk/coverage/cobertura-coverage.xml
+          flags: suite.unit
           fail_ci_if_error: true
           disable_search: true
-          verbose: true
           token: ${{ secrets.CODECOV_TOKEN }}
