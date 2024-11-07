@@ -1228,4 +1228,6 @@ And, update the `tsconfig.json` file to add the `ts-node` property.
 }
 ```
 
+
+
 The documentation may be found at <https://typestrong.org/ts-node/docs/swc/>
