@@ -8,6 +8,7 @@ export async function checkForPlatformWarnings() {
     logging.warning('Uncovered 1');
     logging.warning('Uncovered 2');
     logging.warning('Uncovered 3');
+    logging.warning('Uncovered 4');
   }
 }
 
