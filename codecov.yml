@@ -1,3 +1,9 @@
+# https://docs.codecov.com/docs/codecovyml-reference#parsers
+parsers:
+  cobertura:
+    partials_as_hits: true # false by default
+    handle_missing_conditons: true # false by default
+    
 # https://docs.codecov.com/docs/codecovyml-reference#coverage
 coverage:
   status:
