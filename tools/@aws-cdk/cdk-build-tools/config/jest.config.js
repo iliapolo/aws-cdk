@@ -33,7 +33,7 @@ module.exports = {
     'cobertura', // for codecov. see https://docs.codecov.com/docs/code-coverage-with-javascript
     'html' // for local deep dive
   ],
-  coveragePathIgnorePatterns: ['\\.generated\\.[jt]s$', '<rootDir>/test/', '.warnings.jsii.js$', '/node_modules/'],
+  coveragePathIgnorePatterns: ['\\.generated\\.[jt]s$', '/test/', '.warnings.jsii.js$', '/node_modules/'],
   reporters: ['default', ['jest-junit', { suiteName: 'jest tests', outputDirectory: 'coverage' }]],
   /**
    * This will still show us helpful information when running tests but remove console statements.
