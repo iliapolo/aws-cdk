@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import * as path from 'path';
 import { Octokit } from '@octokit/rest';
 import { Endpoints } from '@octokit/types';
+import { components } from '@octokit/openapi-types';
 import { StatusEvent } from '@octokit/webhooks-definitions/schema';
 import { findModulePath, moduleStability } from './module';
 import { breakingModules } from './parser';
@@ -20,6 +21,8 @@ export const CODECOV_CHECKS = [
   'project/packages/aws-cdk',
   'project/packages/aws-cdk-lib/core'
 ];
+
+type CheckRunConclusion = components['schemas']['check-run']['conclusion']
 
 const PR_FROM_MAIN_ERROR = 'Pull requests from `main` branch of a fork cannot be accepted. Please reopen this contribution from another branch on your fork. For more information, see https://github.com/aws/aws-cdk/blob/main/CONTRIBUTING.md#step-4-pull-request.';
 
@@ -363,7 +366,7 @@ export class PullRequestLinter {
     }
   }
 
-  private async checkRunSucceeded(sha: string, checkName: string) {
+  private async checkRunStatus(sha: string, checkName: string): Promise<CheckRunConclusion> {
     const response = await this.client.paginate(this.client.checks.listForRef, {
       owner: this.prParams.owner,
       repo: this.prParams.repo,
@@ -378,7 +381,7 @@ export class PullRequestLinter {
       .map(s => s.conclusion)[0];
 
     console.log(`${checkName} status: ${status}`)
-    return status === 'success';
+    return status;
   }
 
   /**
@@ -607,11 +610,12 @@ export class PullRequestLinter {
     const codecovTests: Test[] = [];
     for (const c of CODECOV_CHECKS) {
       const checkName = `${CODECOV_PREFIX}${c}`;
-      const succeeded = await this.checkRunSucceeded(sha, checkName);
+      const status = await this.checkRunStatus(sha, checkName);
       codecovTests.push({
         test: () => {
           const result = new TestResult();
-          result.assessFailure(!succeeded, `${checkName} job is not succeeding`);
+          const message = status === undefined ? `${checkName} has not started yet` : `${checkName} job is in status: ${status}`;
+          result.assessFailure(status !== 'success', message);
           return result;
         }
       })
