@@ -1190,6 +1190,14 @@ function configureMock(pr: Subset<linter.GitHubPr>, prFiles?: linter.GitHubFile[
     },
   };
 
+  const checksClient = {
+    listForRef() {
+      return {
+        data: linter.CODECOV_CHECKS.map(c => ({ name: `${linter.CODECOV_PREFIX}${c}`, conclusion: 'success' })),
+      }
+    }
+  }
+
   const searchClient = {
     issuesAndPullRequests() {},
   };
@@ -1204,6 +1212,7 @@ function configureMock(pr: Subset<linter.GitHubPr>, prFiles?: linter.GitHubFile[
       issues: issuesClient as any,
       search: searchClient as any,
       repos: reposClient as any,
+      checks: checksClient as any,
       paginate: (method: any, args: any) => { return method(args).data; },
     } as any,
   });

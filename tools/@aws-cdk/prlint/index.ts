@@ -12,11 +12,11 @@ async function run() {
     switch (github.context.eventName) {
       case 'status':
         const statusPayload = github.context.payload as StatusEvent;
-        const pr = await linter.PullRequestLinter.getPRFromCommit(client, 'aws', 'aws-cdk', statusPayload.sha);
+        const pr = await linter.PullRequestLinter.getPRFromCommit(client, 'iliapolo', 'aws-cdk', statusPayload.sha);
         if (pr) {
           const prLinter = new linter.PullRequestLinter({
             client,
-            owner: 'aws',
+            owner: 'iliapolo',
             repo: 'aws-cdk',
             number: pr.number,
           });
