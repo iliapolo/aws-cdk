@@ -614,7 +614,7 @@ export class PullRequestLinter {
       codecovTests.push({
         test: () => {
           const result = new TestResult();
-          const message = status === undefined ? `${checkName} has not started yet` : `${checkName} job is in status: ${status}`;
+          const message = status == null ? `${checkName} has not started yet` : `${checkName} job is in status: ${status}`;
           result.assessFailure(status !== 'success', message);
           return result;
         }
