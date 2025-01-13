@@ -366,7 +366,7 @@ export class PullRequestLinter {
     }
   }
 
-  private async checkRunConclusion(sha: string, checkName: string): Promise<CheckRunConclusion> {
+  private async checkRunConclusion(sha: string, checkName: string): Promise<CheckRunConclusion> {    
     const response = await this.client.paginate(this.client.checks.listForRef, {
       owner: this.prParams.owner,
       repo: this.prParams.repo,
@@ -374,7 +374,7 @@ export class PullRequestLinter {
     });
 
     // grab the last check run that was started
-    const conclusion = response
+    const conclusion = response.check_runs
       .filter(c => c.name === checkName)
       .filter(c => c.started_at != null)
       .sort((c1, c2) => c2.started_at!.localeCompare(c1.started_at!))
@@ -614,7 +614,7 @@ export class PullRequestLinter {
       codecovTests.push({
         test: () => {
           const result = new TestResult();
-          const message = status == null ? `${checkName} has not started yet` : `${checkName} job is in status: ${status}`;
+          const message = status == null ? `${checkName} has not finished yet` : `${checkName} job is in status: ${status}`;
           result.assessFailure(status !== 'success', message);
           return result;
         }
