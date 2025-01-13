@@ -2,8 +2,8 @@ import { execSync } from 'child_process';
 import * as path from 'path';
 import { Octokit } from '@octokit/rest';
 import { Endpoints } from '@octokit/types';
-import { components } from '@octokit/openapi-types';
 import { StatusEvent } from '@octokit/webhooks-definitions/schema';
+import type { components } from '@octokit/openapi-types';
 import { findModulePath, moduleStability } from './module';
 import { breakingModules } from './parser';
 
@@ -269,14 +269,14 @@ export class PullRequestLinter {
       + 'If you would like to request an exemption from the status checks or clarification on feedback,'
       + ' please leave a comment on this PR containing `Exemption Request` and/or `Clarification Request`.';
     if (!existingReview) {
-      await this.client.pulls.createReview({
-        ...this.prParams,
-        body: 'The pull request linter has failed. See the aws-cdk-automation comment below for failure reasons.'
-          + ' If you believe this pull request should receive an exemption, please comment and provide a justification.'
-          + '\n\n\nA comment requesting an exemption should contain the text `Exemption Request`.'
-          + ' Additionally, if clarification is needed add `Clarification Request` to a comment.',
-        event: 'REQUEST_CHANGES',
-      });
+      // await this.client.pulls.createReview({
+      //   ...this.prParams,
+      //   body: 'The pull request linter has failed. See the aws-cdk-automation comment below for failure reasons.'
+      //     + ' If you believe this pull request should receive an exemption, please comment and provide a justification.'
+      //     + '\n\n\nA comment requesting an exemption should contain the text `Exemption Request`.'
+      //     + ' Additionally, if clarification is needed add `Clarification Request` to a comment.',
+      //   event: 'REQUEST_CHANGES',
+      // });
     }
 
     const comments = await this.client.paginate(this.client.issues.listComments, this.issueParams);
@@ -366,7 +366,7 @@ export class PullRequestLinter {
     }
   }
 
-  private async checkRunStatus(sha: string, checkName: string): Promise<CheckRunConclusion> {
+  private async checkRunConclusion(sha: string, checkName: string): Promise<CheckRunConclusion> {
     const response = await this.client.paginate(this.client.checks.listForRef, {
       owner: this.prParams.owner,
       repo: this.prParams.repo,
@@ -374,14 +374,14 @@ export class PullRequestLinter {
     });
 
     // grab the last check run that was started
-    const status = response
-      .filter(c => c.started_at !== undefined)
-      .sort((c1, c2) => c2.started_at!.localeCompare(c1.started_at!))
+    const conclusion = response
       .filter(c => c.name === checkName)
+      .filter(c => c.started_at != null)
+      .sort((c1, c2) => c2.started_at!.localeCompare(c1.started_at!))
       .map(s => s.conclusion)[0];
 
-    console.log(`${checkName} status: ${status}`)
-    return status;
+    console.log(`${checkName} conclusion: ${conclusion}`)
+    return conclusion;
   }
 
   /**
@@ -610,7 +610,7 @@ export class PullRequestLinter {
     const codecovTests: Test[] = [];
     for (const c of CODECOV_CHECKS) {
       const checkName = `${CODECOV_PREFIX}${c}`;
-      const status = await this.checkRunStatus(sha, checkName);
+      const status = await this.checkRunConclusion(sha, checkName);
       codecovTests.push({
         test: () => {
           const result = new TestResult();
