@@ -373,10 +373,10 @@ export class PullRequestLinter {
       ref: sha,
     });
 
-    // grab the last check run that was started
+    // grab the last check run that was completed
     const conclusion = response
-      .filter(c => c.name === checkName && c.started_at != null)
-      .sort((c1, c2) => c2.started_at!.localeCompare(c1.started_at!))
+      .filter(c => c.name === checkName && c.completed_at != null)
+      .sort((c1, c2) => c2.completed_at!.localeCompare(c1.completed_at!))
       .map(s => s.conclusion)[0];
 
     console.log(`${checkName} conclusion: ${conclusion}`)
@@ -554,6 +554,7 @@ export class PullRequestLinter {
 
     console.log(`⌛  Fetching PR number ${number}`);
     const pr = (await this.client.pulls.get(this.prParams)).data as GitHubPr;
+    console.log(`PR base ref is: ${pr.base.ref}`)
 
     console.log(`⌛  Fetching files for PR number ${number}`);
     const files = await this.client.paginate(this.client.pulls.listFiles, this.prParams);
@@ -607,15 +608,16 @@ export class PullRequestLinter {
     });
 
     if (pr.base.ref === 'main') {
+      // we don't enforce codecov on release branches
       const codecovTests: Test[] = [];
       for (const c of CODECOV_CHECKS) {
         const checkName = `${CODECOV_PREFIX}${c}`;
-        const status = await this.checkRunConclusion(sha, checkName);
+        const conclusion = await this.checkRunConclusion(sha, checkName);
         codecovTests.push({
           test: () => {
             const result = new TestResult();
-            const message = status == null ? `${checkName} has not finished yet` : `${checkName} job is in status: ${status}`;
-            result.assessFailure(status !== 'success', message);
+            const message = conclusion == null ? `${checkName} has not reported a status yet` : `${checkName} job is in status: ${conclusion}`;
+            result.assessFailure(conclusion !== 'success', message);
             return result;
           }
         })
@@ -625,8 +627,6 @@ export class PullRequestLinter {
         exemption: shouldExemptCodecov,
         testRuleSet: codecovTests,
       });  
-    } else {
-      console.log(`Not validating codecode because pr base ref is: ${pr.base.ref}`)
     }
 
     console.log("Deleting PR Linter Comment now");

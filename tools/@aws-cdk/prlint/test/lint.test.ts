@@ -1196,7 +1196,7 @@ function configureMock(pr: Subset<linter.GitHubPr>, prFiles?: linter.GitHubFile[
         data: linter.CODECOV_CHECKS.map(c => ({ 
           name: `${linter.CODECOV_PREFIX}${c}`, 
           conclusion: 'success',
-          started_at: '1'
+          completed_at: '1'
         })),
       }
     }
