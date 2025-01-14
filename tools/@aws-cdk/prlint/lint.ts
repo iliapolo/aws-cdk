@@ -606,24 +606,28 @@ export class PullRequestLinter {
       ],
     });
 
-    const codecovTests: Test[] = [];
-    for (const c of CODECOV_CHECKS) {
-      const checkName = `${CODECOV_PREFIX}${c}`;
-      const status = await this.checkRunConclusion(sha, checkName);
-      codecovTests.push({
-        test: () => {
-          const result = new TestResult();
-          const message = status == null ? `${checkName} has not finished yet` : `${checkName} job is in status: ${status}`;
-          result.assessFailure(status !== 'success', message);
-          return result;
-        }
-      })
+    if (pr.base.ref === 'main') {
+      const codecovTests: Test[] = [];
+      for (const c of CODECOV_CHECKS) {
+        const checkName = `${CODECOV_PREFIX}${c}`;
+        const status = await this.checkRunConclusion(sha, checkName);
+        codecovTests.push({
+          test: () => {
+            const result = new TestResult();
+            const message = status == null ? `${checkName} has not finished yet` : `${checkName} job is in status: ${status}`;
+            result.assessFailure(status !== 'success', message);
+            return result;
+          }
+        })
+      }
+  
+      validationCollector.validateRuleSet({
+        exemption: shouldExemptCodecov,
+        testRuleSet: codecovTests,
+      });  
+    } else {
+      console.log(`Not validating codecode because pr base ref is: ${pr.base.ref}`)
     }
-
-    validationCollector.validateRuleSet({
-      exemption: shouldExemptCodecov,
-      testRuleSet: codecovTests,
-    });
 
     console.log("Deleting PR Linter Comment now");
     await this.deletePRLinterComment();
