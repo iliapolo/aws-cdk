@@ -372,11 +372,9 @@ export class PullRequestLinter {
       repo: this.prParams.repo,
       ref: sha,
     });
-    console.log('Response for run conclusion:')
-    console.log(JSON.stringify(response));
 
     // grab the last check run that was started
-    const conclusion = response.check_runs
+    const conclusion = response
       .filter(c => c.name === checkName && c.started_at != null)
       .sort((c1, c2) => c2.started_at!.localeCompare(c1.started_at!))
       .map(s => s.conclusion)[0];
