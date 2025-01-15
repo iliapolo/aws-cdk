@@ -318,7 +318,7 @@ export class PullRequestLinter {
    */
   private async findExistingPRLinterReview(): Promise<Review | undefined> {
     const reviews = await this.client.paginate(this.client.pulls.listReviews, this.prParams);
-    return reviews.find((review) => review.user?.login === 'iliapolo' && review.state !== 'DISMISSED') as Review;
+    return reviews.find((review) => review.user?.login === 'aws-cdk-automation' && review.state !== 'DISMISSED') as Review;
   }
 
   /**
@@ -327,7 +327,7 @@ export class PullRequestLinter {
    */
   private async findExistingPRLinterComment(): Promise<Comment | undefined> {
     const comments = await this.client.paginate(this.client.issues.listComments, this.issueParams);
-    return comments.find((comment) => comment.user?.login === 'iliapolo' && comment.body?.startsWith('The pull request linter fails with the following errors:')) as Comment;
+    return comments.find((comment) => comment.user?.login === 'aws-cdk-automation' && comment.body?.startsWith('The pull request linter fails with the following errors:')) as Comment;
   }
 
   /**
@@ -411,7 +411,7 @@ export class PullRequestLinter {
     // COLLABORATOR = has been invited to collaborate on the repository
     const maintainerRequestedChanges = reviewsData.some(
       review => review.author_association === 'MEMBER'
-        && review.user?.login !== 'iliapolo'
+        && review.user?.login !== 'aws-cdk-automation'
         && review.state === 'CHANGES_REQUESTED',
     );
     const maintainerApproved = reviewsData.some(
@@ -456,7 +456,7 @@ export class PullRequestLinter {
     const communityApproved = Object.values(reviewsByTrustedCommunityMembers).some(({state}) => state === 'APPROVED');
     const communityRequestedChanges = !communityApproved && Object.values(reviewsByTrustedCommunityMembers).some(({state}) => state === 'CHANGES_REQUESTED')
 
-    const prLinterFailed = reviewsData.find((review) => review.user?.login === 'iliapolo' && review.state !== 'DISMISSED') as Review;
+    const prLinterFailed = reviewsData.find((review) => review.user?.login === 'aws-cdk-automation' && review.state !== 'DISMISSED') as Review;
     const userRequestsExemption = pr.labels.some(label => (label.name === Exemption.REQUEST_EXEMPTION || label.name === Exemption.REQUEST_CLARIFICATION));
     console.log('evaluation: ', JSON.stringify({
       draft: pr.draft,
@@ -593,7 +593,7 @@ export class PullRequestLinter {
     });
 
     validationCollector.validateRuleSet({
-      exemption: (pr) => pr.user?.login === 'iliapolo',
+      exemption: (pr) => pr.user?.login === 'aws-cdk-automation',
       testRuleSet: [{ test: noMetadataChanges }],
     });
 
@@ -731,7 +731,7 @@ function shouldExemptBreakingChange(pr: GitHubPr): boolean {
 }
 
 function shouldExemptCliIntegTested(pr: GitHubPr): boolean {
-  return (hasLabel(pr, Exemption.CLI_INTEG_TESTED) || pr.user?.login === 'iliapolo');
+  return (hasLabel(pr, Exemption.CLI_INTEG_TESTED) || pr.user?.login === 'aws-cdk-automation');
 }
 
 function hasLabel(pr: GitHubPr, labelName: string): boolean {
