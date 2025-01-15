@@ -3,6 +3,9 @@
 
 name: PR Linter
 on:
+  check_run:
+    types:
+      - completed
   pull_request_target:
     types:
       - labeled
