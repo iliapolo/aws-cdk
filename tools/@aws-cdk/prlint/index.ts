@@ -8,6 +8,8 @@ async function run() {
   const token: string = process.env.GITHUB_TOKEN!;
   const client = new Octokit({ auth: token });
 
+  console.log(`Context: ${JSON.stringify(github.context)}`)
+
   try {
     switch (github.context.eventName) {
       case 'status':
